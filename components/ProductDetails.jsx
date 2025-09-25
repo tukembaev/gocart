@@ -7,8 +7,37 @@ import { useState } from "react";
 import Image from "next/image";
 import Counter from "./Counter";
 import { useDispatch, useSelector } from "react-redux";
+import StockBadge from "@/shared/StockBadge";
+import Link from "next/link";
 
 const ProductDetails = ({ product }) => {
+
+    const mockSimilar = [
+  {
+    id: 1,
+    name: "Casio G-Shock GA-2100",
+    price: 120,
+    image: "https://swisstime-exclusive.kg/wp-content/uploads/2024/03/GA-2100FF-8AER.jpg",
+  },
+  {
+    id: 2,
+    name: "Seiko Prospex Diver",
+    price: 240,
+    image: "https://swisstime-exclusive.kg/wp-content/uploads/2024/03/GA-2100FF-8AER.jpg",
+  },
+  {
+    id: 3,
+    name: "Citizen Eco-Drive",
+    price: 180,
+    image: "https://swisstime-exclusive.kg/wp-content/uploads/2024/03/GA-2100FF-8AER.jpg",
+  },
+  {
+    id: 4,
+    name: "Tissot PRX Quartz",
+    price: 350,
+    image: "https://swisstime-exclusive.kg/wp-content/uploads/2024/03/GA-2100FF-8AER.jpg",
+  },
+]
 
     const productId = product.id;
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$';
@@ -25,7 +54,7 @@ const ProductDetails = ({ product }) => {
     }
 
     const averageRating = product.rating.reduce((acc, item) => acc + item.rating, 0) / product.rating.length;
-    
+
     return (
         <div className="flex max-lg:flex-col gap-12">
             <div className="flex max-sm:flex-col-reverse gap-3">
@@ -41,22 +70,39 @@ const ProductDetails = ({ product }) => {
                 </div>
             </div>
             <div className="flex-1">
-                <h1 className="text-3xl font-semibold text-slate-800">{product.name}</h1>
-                <div className='flex items-center mt-2'>
+                <StockBadge status={false} />              
+
+                <h1 className="text-3xl font-semibold text-slate-800">Casio</h1>
+                <h2 className="text-1xl font-semibold text-slate-800">{product.name}</h2>
+
+                  <div className='flex items-center m-1'>
                     {Array(5).fill('').map((_, index) => (
                         <StarIcon key={index} size={14} className='text-transparent mt-0.5' fill={averageRating >= index + 1 ? "#00C950" : "#D1D5DB"} />
                     ))}
                     <p className="text-sm ml-3 text-slate-500">{product.rating.length} Reviews</p>
                 </div>
-                <div className="flex items-start my-6 gap-3 text-2xl font-semibold text-slate-800">
+                <div className="border border-slate-200 rounded-lg p-5 bg-slate-50">
+                    <h2 className="text-lg font-semibold text-slate-800 mb-3">Характеристики</h2>
+                    <ul className="space-y-2 text-slate-600 text-sm">
+                        <li className="flex justify-between"><span>Коллекция</span> <span className="font-medium text-slate-800">G-Shock</span></li>
+                        <li className="flex justify-between"><span>Механизм</span> <span className="font-medium text-slate-800">Кварцевый хронограф</span></li>
+                        <li className="flex justify-between"><span>Пол</span> <span className="font-medium text-slate-800">Мужские</span></li>
+                        <li className="flex justify-between"><span>Материал корпуса</span> <span className="font-medium text-slate-800">Нержавеющая сталь + Пластик</span></li>
+                        <li className="flex justify-between"><span>Размер корпуса</span> <span className="font-medium text-slate-800">Крупные</span></li>
+                        <li className="flex justify-between"><span>Стекло</span> <span className="font-medium text-slate-800">Минеральное</span></li>
+                        <li className="flex justify-between"><span>Страна бренда</span> <span className="font-medium text-slate-800">Япония</span></li>
+                    </ul>
+
+                </div>
+                   <div className="flex items-center my-4 gap-2 text-2xl font-semibold text-slate-800">
                     <p> {currency}{product.price} </p>
-                    <p className="text-xl text-slate-500 line-through">{currency}{product.mrp}</p>
+                    <p className="text-lg pt-1 text-slate-500 line-through">{currency}{product.mrp}</p>
                 </div>
                 <div className="flex items-center gap-2 text-slate-500">
                     <TagIcon size={14} />
                     <p>Save {((product.mrp - product.price) / product.mrp * 100).toFixed(0)}% right now</p>
                 </div>
-                <div className="flex items-end gap-5 mt-10">
+                <div className="flex items-end gap-5 mt-4">
                     {
                         cart[productId] && (
                             <div className="flex flex-col gap-3">
@@ -70,11 +116,47 @@ const ProductDetails = ({ product }) => {
                     </button>
                 </div>
                 <hr className="border-gray-300 my-5" />
-                <div className="flex flex-col gap-4 text-slate-500">
+                    <div className="flex-1 flex flex-col justify-start">
+        <h3 className="text-lg font-semibold text-slate-700 mb-6">
+          Вам также может понравиться
+        </h3>
+        <div className="flex flex-col gap-6">
+          {mockSimilar.slice(0, 3).map((item) => (
+            <div
+              key={item.id}
+              className="flex flex-col gap-3 p-3 border border-slate-200 rounded-lg group"
+            >
+              {/* Top row (desktop: image+info+button) */}
+              <div className="flex items-center gap-4 w-full">
+                <Link
+                  href={`/product/${item.id}`}
+                  className="relative w-20 h-20 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0"
+                >
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-contain group-hover:scale-105 transition"
+                  />
+                </Link>
+                <div className="flex-1">
+                  <p className="text-slate-700 font-medium group-hover:text-slate-900 transition">
+                    {item.name}
+                  </p>
+                  <p className="text-sm text-slate-500">${item.price}</p>
+                </div>
+
+              </div>
+
+            </div>
+          ))}
+        </div>
+      </div>
+                {/* <div className="flex flex-col gap-4 text-slate-500">
                     <p className="flex gap-3"> <EarthIcon className="text-slate-400" /> Free shipping worldwide </p>
                     <p className="flex gap-3"> <CreditCardIcon className="text-slate-400" /> 100% Secured Payment </p>
                     <p className="flex gap-3"> <UserIcon className="text-slate-400" /> Trusted by top brands </p>
-                </div>
+                </div> */}
 
             </div>
         </div>
