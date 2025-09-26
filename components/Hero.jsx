@@ -3,7 +3,7 @@ import { assets } from '@/assets/assets'
 import { ArrowRightIcon, ChevronRightIcon } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
-import CategoriesMarquee from './CategoriesMarquee'
+import BrandsMarquee from './BrandsMarquee'
 
 const Hero = () => {
 
@@ -45,7 +45,7 @@ const Hero = () => {
                     </div>
                 </div>
             </div>
-            <CategoriesMarquee />
+            <BrandsMarquee />
         </div>
 
     )
